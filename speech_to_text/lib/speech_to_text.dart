@@ -398,12 +398,15 @@ class SpeechToText {
       Duration? listenFor,
       Duration? pauseFor,
       String? localeId,
+        String? prompt,
+        bool? dialogMode,
       SpeechSoundLevelChange? onSoundLevelChange,
       cancelOnError = false,
       partialResults = true,
       onDevice = false,
       ListenMode listenMode = ListenMode.confirmation,
-      sampleRate = 0}) async {
+      sampleRate = 0,
+      }) async {
     if (!_initWorked) {
       throw SpeechToTextNotInitializedException();
     }
@@ -425,7 +428,11 @@ class SpeechToText {
           onDevice: onDevice,
           listenMode: listenMode.index,
           sampleRate: sampleRate,
-          localeId: localeId);
+          localeId: localeId,
+          prompt: prompt,
+          dialogMode: dialogMode,
+          listenFor: listenFor?.inMilliseconds,
+      );
       if (started) {
         _listenStartedAt = clock.now().millisecondsSinceEpoch;
         _lastSpeechEventAt = _listenStartedAt;
