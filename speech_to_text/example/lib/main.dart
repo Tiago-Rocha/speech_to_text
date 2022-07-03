@@ -19,10 +19,11 @@ class SpeechSampleApp extends StatefulWidget {
 class _SpeechSampleAppState extends State<SpeechSampleApp> {
   bool _hasSpeech = false;
   bool _logEvents = false;
+  bool _useLegacy = false;
   final TextEditingController _pauseForController =
-      TextEditingController(text: '0');
+      TextEditingController(text: '');
   final TextEditingController _listenForController =
-      TextEditingController(text: '0');
+      TextEditingController(text: '10');
   double level = 0.0;
   double minSoundLevel = 50000;
   double maxSoundLevel = -50000;
@@ -49,6 +50,12 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
         onError: errorListener,
         onStatus: statusListener,
         debugLogging: true,
+        options: [
+          // SpeechToText.androidAlwaysUseStop,
+          // SpeechToText.androidIntentLookup,
+          SpeechToText.androidNoBluetooth,
+          SpeechToText.iosNoBluetooth,
+        ],
       );
       if (hasSpeech) {
         // Get the list of languages installed on the supporting platform so they
@@ -94,6 +101,8 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
                   _switchLogging,
                   _pauseForController,
                   _listenForController,
+                  _useLegacy,
+                  _switchLegacy,
                 ),
               ],
             ),
@@ -131,8 +140,10 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
         partialResults: true,
         localeId: _currentLocaleId,
         onSoundLevelChange: soundLevelListener,
-        cancelOnError: true,
-        listenMode: ListenMode.confirmation);
+        cancelOnError: false,
+        listenMode: ListenMode.dictation,
+        dialogMode: !_useLegacy,
+    );
     setState(() {});
   }
 
@@ -157,6 +168,7 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
   void resultListener(SpeechRecognitionResult result) {
     _logEvent(
         'Result listener final: ${result.finalResult}, words: ${result.recognizedWords}');
+    print('Result listener final: ${result.finalResult}, words: ${result.recognizedWords}');
     setState(() {
       lastWords = '${result.recognizedWords} - ${result.finalResult}';
     });
@@ -204,6 +216,12 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
   void _switchLogging(bool? val) {
     setState(() {
       _logEvents = val ?? false;
+    });
+  }
+
+  void _switchLegacy(bool? val) {
+    setState(() {
+      _useLegacy = val ?? false;
     });
   }
 }
@@ -362,6 +380,8 @@ class SessionOptionsWidget extends StatelessWidget {
       this.switchLogging,
       this.pauseForController,
       this.listenForController,
+      this.useLegacy,
+      this.switchLegacy,
       {Key? key})
       : super(key: key);
 
@@ -372,6 +392,8 @@ class SessionOptionsWidget extends StatelessWidget {
   final TextEditingController listenForController;
   final List<LocaleName> localeNames;
   final bool logEvents;
+  final bool useLegacy;
+  final void Function(bool?) switchLegacy;
 
   @override
   Widget build(BuildContext context) {
@@ -423,6 +445,15 @@ class SessionOptionsWidget extends StatelessWidget {
               Checkbox(
                 value: logEvents,
                 onChanged: switchLogging,
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Text('Android Legacy: '),
+              Checkbox(
+                value: useLegacy,
+                onChanged: switchLegacy,
               ),
             ],
           ),

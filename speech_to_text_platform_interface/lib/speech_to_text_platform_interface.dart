@@ -142,7 +142,6 @@ abstract class SpeechToTextPlatform extends PlatformInterface {
       {String? localeId,
         String? prompt,
         bool? dialogMode,
-        int? listenFor,
       partialResults = true,
       onDevice = false,
       int listenMode = 0,

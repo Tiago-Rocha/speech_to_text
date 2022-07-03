@@ -399,7 +399,7 @@ class SpeechToText {
       Duration? pauseFor,
       String? localeId,
         String? prompt,
-        bool? dialogMode,
+        bool? dialogMode = false,
       SpeechSoundLevelChange? onSoundLevelChange,
       cancelOnError = false,
       partialResults = true,
@@ -431,7 +431,6 @@ class SpeechToText {
           localeId: localeId,
           prompt: prompt,
           dialogMode: dialogMode,
-          listenFor: listenFor?.inMilliseconds,
       );
       if (started) {
         _listenStartedAt = clock.now().millisecondsSinceEpoch;

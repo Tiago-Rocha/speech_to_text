@@ -101,7 +101,6 @@ class MethodChannelSpeechToText extends SpeechToTextPlatform {
       {String? localeId,
         String? prompt,
         bool? dialogMode,
-        int? listenFor,
       partialResults = true,
       onDevice = false,
       int listenMode = 0,
@@ -113,7 +112,6 @@ class MethodChannelSpeechToText extends SpeechToTextPlatform {
       "sampleRate": sampleRate,
       "prompt": prompt,
       "dialogMode": dialogMode,
-      "listenFor": listenFor,
     };
     if (null != localeId) {
       listenParams["localeId"] = localeId;
