@@ -406,10 +406,14 @@ public class SpeechToTextPlugin :
                     } else {
                         outputFile.parentFile?.mkdirs()
                     }
+
                     val outputStream = FileOutputStream(outputFile)
+                    debugLog(outputFile.absolutePath)
+                    debugLog(outputFile)
                     filestream.use { input ->
                         outputStream.use { output ->
                             input?.copyTo(output)
+                            debugLog(outputFile.absolutePath)
                             outputFilePath = outputFile.absolutePath;
                         }
                     }
@@ -865,7 +869,6 @@ public class SpeechToTextPlugin :
         if (rmsdB > maxRms) {
             maxRms = rmsdB
         }
-        debugLog("rmsDB $minRms / $maxRms")
         handler.post {
             run {
                 channel?.invokeMethod(SpeechToTextCallbackMethods.soundLevelChange.name, rmsdB)
